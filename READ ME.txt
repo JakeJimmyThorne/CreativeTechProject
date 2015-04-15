@@ -1,0 +1,3 @@
+To compile, please use the vs2010proj in the vs2010proj folder. 
+
+Do not use the CreativeTech solution.
