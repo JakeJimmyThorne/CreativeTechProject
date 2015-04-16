@@ -250,7 +250,7 @@ void HistoryGenerator::HandleInput()
 		//use D to cycle through different info
 		if (m_State == ENCYCLOPAEDIA)
 		{
-			if (m_encycloSelect < 4)
+			if (m_encycloSelect < 2)
 			{
 				m_encycloSelect++;
 				m_updated = false;
@@ -607,15 +607,15 @@ void HistoryGenerator::DrawEncyclopaedia()
 		if (m_encycloSelect == 1) rlutil::setColor(12); else rlutil::setColor(15);
 		atCoord(SCREEN_X * ENCYCLO_START_WIDTH + 20, SCREEN_Y * ENCYCLO_START_HEIGHT) print header;
 
-		header = "Evt";
+		header = "Food";
 
 		if (m_encycloSelect == 2) rlutil::setColor(12); else rlutil::setColor(15);
 		atCoord(SCREEN_X * ENCYCLO_START_WIDTH + 25, SCREEN_Y * ENCYCLO_START_HEIGHT) print header;
 
-		header = "Eco";
+		//header = "Eco";
 
-		if (m_encycloSelect == 3) rlutil::setColor(12); else rlutil::setColor(15);
-		atCoord(SCREEN_X * ENCYCLO_START_WIDTH + 25, SCREEN_Y * ENCYCLO_START_HEIGHT) print header;
+		//if (m_encycloSelect == 3) rlutil::setColor(12); else rlutil::setColor(15);
+		//atCoord(SCREEN_X * ENCYCLO_START_WIDTH + 25, SCREEN_Y * ENCYCLO_START_HEIGHT) print header;
 	}
 
 
@@ -852,7 +852,106 @@ break;
 
 		break;
 	}
+	case 2: //food graph
+	{
+			  //Population graph screen
+			  for (int i = 0; i < m_History.GetNationCount(); i++)
+			  {
+				  if (m_selection == i + 1)
+				  {
+					  rlutil::setColor(15);
 
+					  std::string text = "";
+
+					  //table width is 60 and height is 15
+
+					  //draw the left bar (with population numbers)
+					  for (int t = 0; t < 15; t++)
+					  {
+						  text = "]";
+						  atCoord(SCREEN_X * ENCYCLO_START_WIDTH + 15, SCREEN_Y * ENCYCLO_START_HEIGHT + 2 + t) print char(186);
+					  }
+
+					  //bottom border
+					  for (int t = 0; t < 60; t++)
+					  {
+						  if (t == 0)
+						  {
+							  atCoord(SCREEN_X * ENCYCLO_START_WIDTH + 15, SCREEN_Y * ENCYCLO_START_HEIGHT + 17)
+								  print char(200);
+
+							  atCoord(SCREEN_X * ENCYCLO_START_WIDTH + 12, SCREEN_Y * ENCYCLO_START_HEIGHT + 17)
+								  print "0";
+						  }
+						  else
+						  {
+							  atCoord(SCREEN_X * ENCYCLO_START_WIDTH + 15 + t, SCREEN_Y * ENCYCLO_START_HEIGHT + 17)
+								  print char(205);
+						  }
+
+					  }
+
+					  //range of 14 to work with
+					  int highestPoint = SCREEN_Y * ENCYCLO_START_HEIGHT + 2; //8
+					  int lowestPoint = SCREEN_Y * ENCYCLO_START_HEIGHT + 16; //22
+
+					  std::vector<int> dataPoints = m_History.GetNation(0)->GetStats()->yearlyFood;
+
+					  //Squeeze the bigger data into the 69 slots of the table
+					  std::vector<int> tableData = JSpline::Calculate(59, dataPoints);
+
+					  //increments of how far each place jumps up on the table
+					  std::vector<int> populationScale;
+
+					  for (int s = 0; s < 14; s++)
+					  {
+						  populationScale.push_back((m_History.GetNation(0)->GetStats()->highestFood / 14) * i + 1);
+					  }
+
+					  //data drawing
+					  for (int p = 0; p < 59; p++)
+					  {
+						  //converting the population amount of the tableData to where it can be resembled on the table
+						  float point = ((float)tableData[p]) / ((float)m_History.GetNation(0)->GetStats()->highestFood);
+						  point *= 1.4f;
+
+						  //get the vector point and then the remainder to see if it's a high/med/low point in that
+						  //particular region
+						  int actualPoint = std::floorf(point * 10);
+						  float remainder = (point * 10) - actualPoint;
+
+						  if (remainder > 0 && remainder <= 0.33f)
+						  {
+							  atCoord(SCREEN_X * ENCYCLO_START_WIDTH + 16 + p, lowestPoint - actualPoint)
+								  print char(220); //low
+						  }
+						  else if (remainder > 0.33f && remainder <= 0.66f)
+						  {
+							  atCoord(SCREEN_X * ENCYCLO_START_WIDTH + 16 + p, lowestPoint - actualPoint)
+								  print char(254); //mid
+						  }
+						  else if (remainder > 0.66f)
+						  {
+							  atCoord(SCREEN_X * ENCYCLO_START_WIDTH + 16 + p, lowestPoint - actualPoint)
+								  print char(223); //high
+						  }
+					  }
+
+					  rlutil::setColor(12);
+				  }
+				  else
+					  rlutil::setColor(15);
+
+				  atCoord(SCREEN_X * ENCYCLO_START_WIDTH, SCREEN_Y * ENCYCLO_START_HEIGHT + i)
+
+					  std::string name = m_History.GetNation(i)->GetName();
+				  RemoveZeroes(name);
+
+				  print name;
+			  }
+
+			  break;
+	}
 	}
 
 	

@@ -27,6 +27,9 @@ Stats::Stats()
 	wars = 0;
 	highestPop = 0;
 	lowestPop = 0;
+
+	highestFood = 0;
+	lowestFood = 0;
 }
 
 Stats::~Stats()

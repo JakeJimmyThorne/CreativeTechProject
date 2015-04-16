@@ -44,6 +44,7 @@ public:
 	std::vector<int> yearlyMorale;
 
 	int highestPop, lowestPop;
+	int highestFood, lowestFood;
 };
 
 #endif

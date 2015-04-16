@@ -566,4 +566,10 @@ void Nation::UpdateDataGraphs()
 
 	if (m_population < m_Stats.lowestPop)
 		m_Stats.lowestPop = m_population;
+
+	if (m_foodSupply > m_Stats.highestFood)
+		m_Stats.highestFood = m_foodSupply;
+
+	if (m_waterSupply < m_Stats.lowestFood)
+		m_Stats.lowestFood = m_waterSupply;
 }
